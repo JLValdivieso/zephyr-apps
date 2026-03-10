@@ -156,3 +156,5 @@ qemu-system-riscv64 -nographic -M virt -cpu rv64 -m 256M -smp 1 -bios none -kern
 
 Running QEMU manually is recommended when more control over the virtual
 machine configuration is required.
+
+Exit QEMU by pressing `CTRL` + `A` `x`.
