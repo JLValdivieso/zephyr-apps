@@ -1,0 +1,22 @@
+/ {
+    chosen {
+        zephyr,console = &uart0;
+        zephyr,shell-uart = &uart0; 
+        zephyr,uart-pipe = &uart0;
+    };
+
+    soc {
+        virtio_net: virtio@10008000 {
+            compatible = "virtio,mmio";
+            reg = <0x10008000 0x1000>;
+            interrupt-parent = <&plic>;
+            interrupts = <8 1>;
+            status = "okay";
+
+            net0: ethernet {
+                compatible = "virtio,net";
+                status = "okay";
+            };
+        };
+    };
+};
