@@ -108,10 +108,25 @@ Install it with:
 
 ``` bash
 cd zephyr
-git checkout 3568e1b6d5cdd51a6b964a2a1d6d29200fea2056
+git checkout a6eef0ba3755f2530c5ce93524e5ac4f5be30194
 west sdk install
 ```
 
+Update to 3.5 zephyr stable version
+
+``` bash
+cd ../..
+pip install -r zephyrproject/zephyr/scripts/requirements.txt
+
+cd ~
+wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.16.3/zephyr-sdk-0.16.3_linux-x86_64.tar.xz
+wget -O - https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.16.3/sha256.sum | shasum --check --ignore-missing
+
+tar xvf zephyr-sdk-0.16.3_linux-x86_64.tar.xz
+
+cd zephyr-sdk-0.16.3
+./setup.sh
+```
 ------------------------------------------------------------------------
 
 # Building the Example Application
@@ -123,15 +138,39 @@ Navigate to the `zephyr_demo` directory and run:
 
 ``` bash
 export ZEPHYR_BASE=$(pwd)/zephyrproject/zephyr
-west build -b qemu_riscv64 app
+west build -p always -b qemu_riscv64 app
 ```
 
+to run the application for cva6 core run:
+``` bash
+export ZEPHYR_BASE=$(pwd)/zephyrproject/zephyr
+west build -p always -b cv64a6_genesys_2 app
+``` 
 After compilation, the build system will generate a **build** directory.
 
 The generated binary is located at:
 
     build/zephyr/zephyr.elf
 
+------------------------------------------------------------------------
+
+# Building Network Stack
+
+Zephyr provides a network stack that can be accessed through a serial terminal. To enable it, configure the required options in the `prj.conf file of your application (see the example in the icmp app).
+
+To allow communication between the Zephyr instance (running in QEMU) and the host, you need to create and configure a TAP interface:
+
+``` bash
+sudo ip tuntap add dev tap0 mode tap 
+sudo ip addr add 192.168.100.1/24 dev tap0 
+sudo ip link set tap0 up 
+```
+
+Once the network interface is ready, build the application:
+``` bash
+export ZEPHYR_BASE=$(pwd)/zephyrproject/zephyr
+west build -p always -b qemu_riscv64 icmp
+``` 
 ------------------------------------------------------------------------
 
 # Running the Application
@@ -151,10 +190,29 @@ west build -t run
 You can also run QEMU directly with the generated ELF:
 
 ``` bash
-qemu-system-riscv64 -nographic -M virt -cpu rv64 -m 256M -smp 1 -bios none -kernel build/zephyr/zephyr.elf -chardev stdio,id=con,mux=on -serial chardev:con -mon chardev=con,mode=readline
+qemu-system-riscv64 \
+  -nographic -M virt -cpu rv64 -m 256M -smp 1 \
+  -bios none -kernel build/zephyr/zephyr.elf \
+  -chardev stdio,id=con,mux=on -serial chardev:con \
+  -mon chardev=con,mode=readline \
+  -global virtio-mmio.force-legacy=false \
+  -netdev tap,id=net0,ifname=tap0,script=no,downscript=no \
+  -device virtio-net-device,netdev=net0
+```
+To run in the cva6 fork (no network stack) run:
+``` bash
+./path/to/qemu/fork/cva6/build/qemu-system-riscv64 -nographic -M cva6 -m 1G -smp 1 \ 
+-kernel zephyr.elf \ 
+-serial mon:stdio 
 ```
 
 Running QEMU manually is recommended when more control over the virtual
 machine configuration is required.
 
 Exit QEMU by pressing `CTRL` + `A` `x`.
+
+``` bash
+~/Documents/qemu/build/qemu-system-riscv64 -nographic -M cva6 -m 1G -smp 1 \
+  -kernel build/zephyr/zephyr.elf \
+  -serial mon:stdio
+```
