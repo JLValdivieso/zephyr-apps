@@ -77,7 +77,7 @@ pip install west
 ## Retrieve the Zephyr Source Code
 
 ``` bash
-west init zephyrproject
+west init -m https://github.com/JLValdivieso/zephyr.git --mr cheshire zephyrproject
 cd zephyrproject
 west update
 ```
@@ -108,24 +108,7 @@ Install it with:
 
 ``` bash
 cd zephyr
-git checkout a6eef0ba3755f2530c5ce93524e5ac4f5be30194
 west sdk install
-```
-
-Update to 3.5 zephyr stable version
-
-``` bash
-cd ../..
-pip install -r zephyrproject/zephyr/scripts/requirements.txt
-
-cd ~
-wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.16.3/zephyr-sdk-0.16.3_linux-x86_64.tar.xz
-wget -O - https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.16.3/sha256.sum | shasum --check --ignore-missing
-
-tar xvf zephyr-sdk-0.16.3_linux-x86_64.tar.xz
-
-cd zephyr-sdk-0.16.3
-./setup.sh
 ```
 ------------------------------------------------------------------------
 
@@ -210,9 +193,3 @@ Running QEMU manually is recommended when more control over the virtual
 machine configuration is required.
 
 Exit QEMU by pressing `CTRL` + `A` `x`.
-
-``` bash
-~/Documents/qemu/build/qemu-system-riscv64 -nographic -M cva6 -m 1G -smp 1 \
-  -kernel build/zephyr/zephyr.elf \
-  -serial mon:stdio
-```

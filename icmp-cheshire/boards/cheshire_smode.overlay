@@ -1,0 +1,7 @@
+&plic {
+    interrupts-extended = <&hlic 9>;
+};
+
+&memory0 {
+    reg = <0x0 0x80200000 0x0 0x3FE00000>;
+};
