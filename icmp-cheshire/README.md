@@ -4,18 +4,18 @@
 
 ### Set Up the Environment
 
-Before building, export the Zephyr base path:
+Before building, export the Zephyr base path, navigate to root and run:
 
 ```bash
 export ZEPHYR_BASE=$(pwd)/zephyrproject/zephyr
 ```
 
-### Build and Run
+### Build
 
-To build and run the application:
+To build the application:
 
 ```bash
-west build -p always -b cheshire app
+west build -p always -b cheshire icmp-cheshire
 ```
 
 ## Switching Between M-Mode and S-Mode

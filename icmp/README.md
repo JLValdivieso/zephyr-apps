@@ -1,10 +1,12 @@
 # Zephyr QEMU RISC-V Networking Demo
 
-## Build and Run
+## Build
+
+Navigate to root folder and run:
 
 ```bash
 export ZEPHYR_BASE=$(pwd)/zephyrproject/zephyr
-west build -p always -b qemu_riscv64 app
+west build -p always -b qemu_riscv64 icmp
 ```
 
 ## Switching Between M-Mode and S-Mode

@@ -4,15 +4,15 @@
 
 ### Set Up the Environment
 
-Before building, export the Zephyr base path:
+Before building, export the Zephyr base path navigate to root folder and run:
 
 ```bash
 export ZEPHYR_BASE=$(pwd)/zephyrproject/zephyr
 ```
 
-### Build and Run
+### Build
 
-To build and run the application (e.g., using QEMU):
+To build the application (e.g., using QEMU):
 
 ```bash
 west build -p always -b qemu_riscv64 app
