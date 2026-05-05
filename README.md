@@ -1,4 +1,4 @@
-# Zephyr RTOS on QEMU (RISC-V)
+# Zephyr RTOS demos
 
 Run **Zephyr RTOS** on the **QEMU emulator** using the **RISC‑V
 architecture**.
