@@ -1,0 +1,49 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ * Overlay: virtio shared memory for Bao hypervisor
+ */
+
+/ {
+	chosen {
+        zephyr,console = &uart0;
+        zephyr,shell-uart = &uart0; 
+        zephyr,uart-pipe = &uart0;
+    };
+
+	reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		virtio_shm: buffer@20000000 {
+			compatible = "zephyr,memory-region";
+			reg = <0x20000000 0x01000000>;
+			zephyr,memory-region = "VIRTIO_SHM";
+		};
+	};
+
+	soc {
+		virtio_net: virtio@30000000 {
+			compatible = "virtio,mmio";
+			reg = <0x30000000 0x200>;
+			interrupt-parent = <&plic>;
+			interrupts = <110 1>;
+			status = "okay";
+			memory-region = <&virtio_shm>;
+
+			net0: ethernet {
+				compatible = "virtio,net";
+				status = "okay";
+				local-mac-address = [52 54 00 aa bb 01];
+			};
+		};
+	};
+};
+
+&plic {
+	interrupts-extended = <&hlic0 0x09>;
+};
+
+&ram0 {
+	reg = <0x80200000 0x19800000>;
+};
